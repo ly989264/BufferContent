@@ -1,0 +1,3 @@
+ls -l /dev/kmsg
+cat /proc/sys/kernel/printk_devkmsg 2>/dev/null
+cat /proc/cmdline | tr ' ' '\n' | grep -E 'printk.devkmsg|devkmsg'
