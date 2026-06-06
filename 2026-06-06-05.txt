@@ -1,0 +1,15 @@
+python2 - <<'PY'
+import os, time
+
+msg = '<6>DMSG_TEST_%d: manual kernel log test\n' % int(time.time())
+
+fd = os.open('/dev/kmsg', os.O_WRONLY)
+try:
+    os.write(fd, msg)
+finally:
+    os.close(fd)
+
+print msg.strip()
+PY
+
+dmesg -T | tail -n 20
