@@ -1,0 +1,19 @@
+CG=/sys/fs/cgroup/memory/dmesg_oom_test_$$
+
+sudo mkdir "$CG"
+echo $((64*1024*1024)) | sudo tee "$CG/memory.limit_in_bytes" >/dev/null
+echo 0 | sudo tee "$CG/memory.swappiness" >/dev/null 2>&1 || true
+
+python2 - <<'PY' &
+a = []
+while True:
+    a.append('x' * 1024 * 1024)
+PY
+
+PID=$!
+echo "$PID" | sudo tee "$CG/tasks" >/dev/null
+wait "$PID" 2>/dev/null || true
+
+dmesg -T | tail -n 80
+
+sudo rmdir "$CG" 2>/dev/null || true
